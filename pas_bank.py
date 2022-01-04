@@ -8,9 +8,10 @@ for i in range(32, 127):
 GET = 'get '
 GEN = 'gen '
 LIST = 'list'
-STOP = 'stop'
-INPUT = 'pas_bank:-$ '
+STOP = 'exit'
+INPUT = 'pas_bank> '
 DEL = 'del '
+CLEAR = 'clear'
 
 table = connect('passwords.db')
 cursor = table.cursor()
@@ -58,8 +59,15 @@ while(command != STOP):
     if command.lower() == LIST:
        cursor.execute('SELECT * from passwords')
        result = cursor.fetchall()
-       print()
+       cursor.execute('SELECT Count(*) from  passwords')
+       total = cursor.fetchone()
+
+       print("total "+str(total[0]))
        print('\n'.join(map(': '.join, result)))
+
+    if command.lower() == CLEAR:
+        cursor.execute('DELETE from passwords')
+        table.commit()
 
     command = input(INPUT).lower()
 
